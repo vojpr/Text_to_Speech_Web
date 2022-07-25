@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, send_from_directory
 from io import BytesIO
 import pyttsx3
+import gtts
 from PyPDF2 import PdfReader
 import os
 
@@ -29,11 +30,13 @@ def home():
                 page = reader.pages[each]
                 pdf_string += page.extract_text()
             # Creates mp3 file from string
-            engine = pyttsx3.init(driverName="espeak")
+            engine = pyttsx3.init("dummy")
             engine.setProperty('rate', 155)
             engine.save_to_file(pdf_string, "zpeechy.mp3")
             engine.runAndWait()
-            return send_from_directory(current_directory, "zpeechy.mp3", as_attachment=True)
+            # tts = gtts.gTTS(pdf_string)
+            # tts.save("zpeechy.mp3")
+            # return send_from_directory(current_directory, "zpeechy.mp3", as_attachment=True)
         #except:
             #error = "Upload your PDF file first"
             #return render_template("index.html", error=error)
