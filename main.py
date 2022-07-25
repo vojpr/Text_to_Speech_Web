@@ -30,7 +30,7 @@ def home():
                 page = reader.pages[each]
                 pdf_string += page.extract_text()
             # Creates mp3 file from string
-            engine = pyttsx3.init()
+            engine = pyttsx3.init("init")
             engine.setProperty('rate', 155)
             engine.save_to_file(pdf_string, "zpeechy.mp3")
             engine.runAndWait()
