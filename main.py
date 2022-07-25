@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, send_from_directory
 from io import BytesIO
-import pyttsx3
 import gtts
 from PyPDF2 import PdfReader
 import os
@@ -13,7 +12,7 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 def home():
     error = None
     if request.method == 'POST':
-        #try:
+        try:
             # Deletes previously created mp3 file
             current_directory = os.getcwd()
             files_in_dir = os.listdir()
@@ -30,16 +29,12 @@ def home():
                 page = reader.pages[each]
                 pdf_string += page.extract_text()
             # Creates mp3 file from string
-            engine = pyttsx3.init("init")
-            engine.setProperty('rate', 155)
-            engine.save_to_file(pdf_string, "zpeechy.mp3")
-            engine.runAndWait()
-            # tts = gtts.gTTS(pdf_string)
-            # tts.save("zpeechy.mp3")
-            # return send_from_directory(current_directory, "zpeechy.mp3", as_attachment=True)
-        #except:
-            #error = "Upload your PDF file first"
-            #return render_template("index.html", error=error)
+            tts = gtts.gTTS(pdf_string)
+            tts.save("zpeechy.mp3")
+            return send_from_directory(current_directory, "zpeechy.mp3", as_attachment=True)
+        except:
+            error = "Upload your PDF file first"
+            return render_template("index.html", error=error)
     else:
         return render_template("index.html", error=error)
 
