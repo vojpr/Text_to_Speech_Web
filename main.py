@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request, send_from_directory
+from flask import Flask, render_template, request, send_from_directory, make_response
 from io import BytesIO
 import gtts
 from PyPDF2 import PdfReader
 import os
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
@@ -31,7 +32,12 @@ def home():
             # Creates mp3 file from string
             tts = gtts.gTTS(pdf_string)
             tts.save("zpeechy.mp3")
-            return send_from_directory(current_directory, "zpeechy.mp3", as_attachment=True)
+            response = make_response(send_from_directory(current_directory, "zpeechy.mp3", as_attachment=True))
+            # Set cookie for displaying loading animation before download start
+            now = datetime.now()
+            after_20_seconds = now + timedelta(seconds=20)
+            response.set_cookie(key="downloadStarted", value="1", expires=after_20_seconds)
+            return response
         except:
             error = "Upload your PDF file first"
             return render_template("index.html", error=error)
