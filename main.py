@@ -1,3 +1,4 @@
+from PyPDF2.errors import PdfReadError
 from flask import Flask, render_template, request, send_from_directory, make_response
 from io import BytesIO
 import gtts
@@ -26,8 +27,8 @@ def home():
             pdf_string = ""
             reader = PdfReader(bytes_file)
             number_of_pages = len(reader.pages)
-            for each in range(number_of_pages):
-                page = reader.pages[each]
+            for number in range(number_of_pages):
+                page = reader.pages[number]
                 pdf_string += page.extract_text()
             # Creates mp3 file from string
             tts = gtts.gTTS(pdf_string)
@@ -38,7 +39,7 @@ def home():
             after_20_seconds = now + timedelta(seconds=20)
             response.set_cookie(key="downloadStarted", value="1", expires=after_20_seconds)
             return response
-        except:
+        except PdfReadError:
             error = "Upload your PDF file first"
             return render_template("index.html", error=error)
     else:
