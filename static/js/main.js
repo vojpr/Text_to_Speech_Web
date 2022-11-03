@@ -162,3 +162,15 @@ var checkDownloadCookie = function() {
     downloadTimeout = setTimeout(checkDownloadCookie, 1000);
   }
 };
+
+/**
+* Checking file size to be less than 500 kB
+*/
+var uploadField = document.getElementById("file");
+
+uploadField.onchange = function() {
+    if(this.files[0].size > 512){
+       alert("File is too big! Please select a file with a maximum size of 500 kB.");
+       this.value = "";
+    };
+};
